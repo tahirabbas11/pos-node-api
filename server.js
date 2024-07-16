@@ -29,6 +29,16 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(cors());
 
+
+app.get('/', (req, res) => {
+  res.json({
+    name: 'Tahir Abbas',
+    github: 'https://github.com/tahirabbas1',
+    email: 'tahirabbas1@gmail.com',
+    contact: '0321-3600429'
+  });
+});
+
 app.use("/api/categories", categoryRoute);
 app.use("/api/products", productRoute);
 app.use("/api/invoices", invoiceRoute);
