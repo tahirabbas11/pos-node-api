@@ -33,9 +33,10 @@ app.use(cors());
 app.get('/', (req, res) => {
   res.json({
     name: 'Tahir Abbas',
-    github: 'https://github.com/tahirabbas1',
-    email: 'tahirabbas1@gmail.com',
-    contact: '0321-3600429'
+    github: 'https://github.com/tahirabbas11',
+    email: 'tahir.12868@iqra.edu.pk',
+    contact: '0321-3600429',
+    portfolio:'https://thetahirabbas.netlify.app'
   });
 });
 

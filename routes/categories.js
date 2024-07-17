@@ -16,8 +16,8 @@ router.get("/get-all", async (req, res) => {
 router.post("/add-category", async (req, res) => {
   try {
     const newCategory = new Category(req.body);
-    await newCategory.save();
-    res.status(200).json("Item added successfully.");
+    const savedCategory = await newCategory.save();
+    res.status(200).json({id: savedCategory._id});
   } catch (error) {
     res.status(500).json(error);
   }
