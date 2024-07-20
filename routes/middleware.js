@@ -7,7 +7,7 @@ const auth = async (req, res, next) => {
     const token = authorization ? authorization.replace('Bearer ', '') : null;
 
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'demo');
       const user = await User.findOne({ _id: decoded.userId, token });
   
       if (!user || user.tokenExpiration < Date.now()) {
