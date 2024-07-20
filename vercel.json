@@ -34,6 +34,11 @@
           }
         ]
       }
-    ]
+    ],
+    "functions": {
+      "api/auth/login": {
+        "maxDuration": 30
+      }
+    }
   }
   
