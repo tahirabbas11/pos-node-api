@@ -1,7 +1,7 @@
 [build]
   command = "yarn install"
-  publish = "."
-  
+  publish = "."  # Assuming your server.js is in the root directory
+
 [[redirects]]
   from = "/*"
   to = "/server.js"
