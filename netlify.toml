@@ -3,4 +3,4 @@
 
 [dev]
   functions = "functions"
-  publish = "public"  # This is optional, depending on your project's structure
+  publish = "public" 
