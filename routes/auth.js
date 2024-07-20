@@ -31,7 +31,7 @@ router.post('/login', async (req, res) => {
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '6h' });
     user.token = token;
-    user.tokenExpiration = Date.now() + 5 * 60 * 1000; // 1 minutes
+    user.tokenExpiration = Date.now() + 6 * 60 * 60 * 1000; // 6 hours
     await user.save();
 
     res.status(200).json({ token });
