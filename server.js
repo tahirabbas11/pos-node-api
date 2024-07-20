@@ -5,6 +5,7 @@ const app = express();
 const cors = require("cors");
 const logger = require("morgan");
 const port = process.env.PORT || 4000;
+const auth = require("./routes/middleware.js");
 
 dotenv.config();
 
@@ -40,11 +41,11 @@ app.get('/', (req, res) => {
   });
 });
 
-app.use("/api/categories", categoryRoute);
-app.use("/api/products", productRoute);
-app.use("/api/invoices", invoiceRoute);
+app.use("/api/categories",auth, categoryRoute);
+app.use("/api/products",auth, productRoute);
+app.use("/api/invoices",auth,  invoiceRoute);
 app.use("/api/auth", authRoute);
-app.use("/api/users", userRoute);
+app.use("/api/users",auth, userRoute);
 
 app.listen(port, () => {
   connect();

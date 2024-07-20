@@ -2,6 +2,8 @@ const User = require("../models/User.js");
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
+const jwt = require('jsonwebtoken');
+
 
 //! register
 // router.post("/register", async (req, res) => {
@@ -18,25 +20,24 @@ const bcrypt = require("bcryptjs");
 // });
 
 //! login
-router.post("/login", async (req, res) => {
+router.post('/login', async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
-    if (!user) {
-      return res.status(404).send({ error: "User not found!" });
-    }
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
 
-    const validPassword = await bcrypt.compare(
-      req.body.password,
-      user.password
-    );
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
-    if (!validPassword) {
-      res.status(403).json("Invalid Password!");
-    } else {
-      res.status(200).json("Giriş işlemi başarılı.");
-    }
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '6h' });
+    user.token = token;
+    user.tokenExpiration = Date.now() + 5 * 60 * 1000; // 1 minutes
+    await user.save();
+
+    res.status(200).json({ token });
   } catch (error) {
-    res.status(500).json(error);
+
+    res.status(500).json({ error: error.message });
   }
 });
 
