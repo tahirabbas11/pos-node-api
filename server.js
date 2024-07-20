@@ -28,8 +28,12 @@ const connect = async () => {
 //middlewares
 app.use(logger("dev"));
 app.use(express.json());
-app.use(cors());
-
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  })
+);
 
 app.get('/', (req, res) => {
   res.json({
@@ -51,3 +55,4 @@ app.listen(port, () => {
   connect();
   console.log(`Listening on port ${port}`);
 });
+
