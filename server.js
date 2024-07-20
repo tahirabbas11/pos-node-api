@@ -9,33 +9,28 @@ const auth = require("./routes/middleware.js");
 
 dotenv.config();
 
-// Routes
+//routes
 const categoryRoute = require("./routes/categories.js");
 const productRoute = require("./routes/products.js");
 const invoiceRoute = require("./routes/invoices.js");
 const authRoute = require("./routes/auth.js");
 const userRoute = require("./routes/users.js");
 
-// MongoDB Connection
 const connect = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+    await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to MongoDB");
   } catch (error) {
-    console.error("MongoDB connection error:", error);
     throw error;
   }
 };
 
-// Middleware
+//middlewares
 app.use(logger("dev"));
 app.use(express.json());
-app.use(cors({
-  origin: process.env.CLIENT_URL,
-  credentials: true,
-}));
+app.use(cors());
 
-// Test Route
+
 app.get('/', (req, res) => {
   res.json({
     name: 'Tahir Abbas',
@@ -46,15 +41,13 @@ app.get('/', (req, res) => {
   });
 });
 
-// Protected Routes
-app.use("/api/categories", auth, categoryRoute);
-app.use("/api/products", auth, productRoute);
-app.use("/api/invoices", auth, invoiceRoute);
+app.use("/api/categories",auth, categoryRoute);
+app.use("/api/products",auth, productRoute);
+app.use("/api/invoices",auth,  invoiceRoute);
 app.use("/api/auth", authRoute);
-app.use("/api/users", auth, userRoute);
+app.use("/api/users",auth, userRoute);
 
-// Start Server
 app.listen(port, () => {
   connect();
-  console.log(`Server is running on port ${port}`);
+  console.log(`Listening on port ${port}`);
 });
