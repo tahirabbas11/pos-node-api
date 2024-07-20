@@ -19,7 +19,8 @@ const jwt = require('jsonwebtoken');
 //   }
 // });
 
-//! login
+//login
+// ! login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
