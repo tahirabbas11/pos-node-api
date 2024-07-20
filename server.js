@@ -28,11 +28,13 @@ const connect = async () => {
 //middlewares
 app.use(logger("dev"));
 app.use(express.json());
-app.use(
-  cors({
-    origin: "*",
-  })
-);
+// Use CORS middleware
+app.use(cors({
+  origin: '*', // or '*' to allow all origins
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: 'Content-Type, Authorization'
+}));
+
 
 app.get('/', (req, res) => {
   res.json({
