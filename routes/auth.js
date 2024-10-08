@@ -6,18 +6,18 @@ const jwt = require('jsonwebtoken');
 
 
 // // register
-router.post("/register", async (req, res) => {
-  try {
-    const { userName='Tahir', email='tahir03083740911@gmail.com', password='tahir03083740911@gmail.com' } = req.body;
-    const salt = await bcrypt.genSaltSync(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    const newUser = new User({ userName, email, password: hashedPassword });
-    await newUser.save();
-    res.status(200).json("A new user created successfully");
-  } catch (error) {
-    res.status(500).json(error);
-  }
-});
+// router.post("/register", async (req, res) => {
+//   try {
+//     const { userName='Tahir', email='tahir03083740911@gmail.com', password='tahir03083740911@gmail.com' } = req.body;
+//     const salt = await bcrypt.genSaltSync(10);
+//     const hashedPassword = await bcrypt.hash(password, salt);
+//     const newUser = new User({ userName, email, password: hashedPassword });
+//     await newUser.save();
+//     res.status(200).json("A new user created successfully");
+//   } catch (error) {
+//     res.status(500).json(error);
+//   }
+// });
 
 //login
 // ! login
