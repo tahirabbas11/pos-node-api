@@ -1,17 +1,62 @@
 const Invoice = require("../models/Invoice.js");
+const Product = require("../models/Product.js");
 const express = require("express");
 const router = express.Router();
 
-//! create invoice
+//! Create invoice
 router.post("/add-invoice", async (req, res) => {
+  const { cartItems } = req.body;
+
   try {
+    // Gather all product IDs from the cart
+    const productIds = cartItems.map(item => item._id);
+
+    // Fetch products in a single query
+    const products = await Product.find({ _id: { $in: productIds } });
+
+    // Create a mapping of product IDs to their quantities
+    const productMap = {};
+    products.forEach(product => {
+      productMap[product._id] = product;
+    });
+
+    // Check product availability and prepare to update quantities
+    for (const item of cartItems) {
+      const product = productMap[item._id];
+
+      // Check if the product exists
+      if (!product) {
+        return res.status(404).json({ message: `Product with ID ${item._id} not found.` });
+      }
+
+      // Check if quantity is sufficient
+      if (product.quantity < item.quantity) {
+        return res.status(400).json({
+          message: `Insufficient quantity for ${product.title}. Available: ${product.quantity}, Requested: ${item.quantity}`,
+        });
+      }
+    }
+
+    // Create the invoice
     const invoice = new Invoice(req.body);
     await invoice.save();
+
+    // Update product quantities in bulk
+    const bulkOps = cartItems.map(item => ({
+      updateOne: {
+        filter: { _id: item._id },
+        update: { $inc: { quantity: -item.quantity } },
+      },
+    }));
+    await Product.bulkWrite(bulkOps);
+
     res.status(200).json(invoice);
   } catch (error) {
-    res.send(400).json(error);
+    res.status(400).json({ error: error.message });
   }
 });
+
+
 
 // //! get all invoices
 // router.get("/get-all", async (req, res) => {
@@ -26,7 +71,8 @@ router.post("/add-invoice", async (req, res) => {
 router.get('/get-all', async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
-    const filter = {};
+    const filter = { };
+    const sort = { createdAt: 1 };
 
     // Function to get the start and end of a day
     const getStartOfDay = (date) => {
@@ -75,7 +121,7 @@ router.get('/get-all', async (req, res) => {
     }
 
     // Fetch invoices with the constructed filter
-    const invoices = await Invoice.find(filter);
+    const invoices = await Invoice.find(filter, {}, { sort });
     if (invoices.length === 0) {
       return res.status(404).json({ message: 'No invoices found' });
     }

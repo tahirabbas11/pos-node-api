@@ -1,4 +1,5 @@
 const Category = require("../models/Category.js");
+const Product = require("../models/Product.js");
 const express = require("express");
 const router = express.Router();
 
@@ -26,12 +27,30 @@ router.post("/add-category", async (req, res) => {
 //! update category
 router.put("/update-category", async (req, res) => {
   try {
-    await Category.findOneAndUpdate({ _id: req.body.categoryId }, req.body);
-    res.status(200).json("Item updated successfully.");
+    // Find the old category by ID
+    const oldCategory = await Category.findOne({ _id: req.body.categoryId });
+
+    // If the category title is different from the new title
+    if (oldCategory.title !== req.body.title) {
+      // Update the category title in the Category collection
+      await Category.findOneAndUpdate(
+        { _id: req.body.categoryId }, 
+        { title: req.body.title }
+      );
+
+      // Update the category field in all related Product documents
+      await Product.updateMany(
+        { category: oldCategory.title },  // Use the category field in the query
+        { category: req.body.title }      // Update to the new category title
+      )
+    }
+
+    res.status(200).json("Category updated successfully.");
   } catch (error) {
     res.status(500).json(error);
   }
 });
+
 
 //! delete category
 router.delete("/delete-category", async (req, res) => {

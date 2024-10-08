@@ -9,12 +9,19 @@ const auth = require("./routes/middleware.js");
 
 dotenv.config();
 
+
+// Set up multer storage
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage: storage });
+
 //routes
 const categoryRoute = require("./routes/categories.js");
 const productRoute = require("./routes/products.js");
 const invoiceRoute = require("./routes/invoices.js");
 const authRoute = require("./routes/auth.js");
 const userRoute = require("./routes/users.js");
+const vendors = require("./routes/vendors.js");
+const purchaseRoute = require("./routes/purchase.js");
 
 const connect = async () => {
   try {
@@ -31,8 +38,9 @@ app.use(express.json());
 // Use CORS middleware
 app.use(cors({
   origin: '*', // or '*' to allow all origins
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: 'Content-Type, Authorization'
+  credentials: true,
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  // allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 
@@ -49,8 +57,10 @@ app.get('/', (req, res) => {
 app.use("/api/categories",auth, categoryRoute);
 app.use("/api/products",auth, productRoute);
 app.use("/api/invoices",auth,  invoiceRoute);
+app.use("/api/vendors",auth,  vendors);
 app.use("/api/auth", authRoute);
 app.use("/api/users",auth, userRoute);
+app.use("/api/purchase",auth, purchaseRoute);
 
 app.listen(port, () => {
   connect();
