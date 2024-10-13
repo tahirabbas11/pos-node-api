@@ -35,6 +35,7 @@ app.use(cors({
 app.use('/.netlify/functions/api', router);
 
 // Import routes
+const expenses = require('../routes/expenses');
 const categoryRoute = require('../routes/categories');
 const productRoute = require('../routes/products');
 const invoiceRoute = require('../routes/invoices');
@@ -51,7 +52,7 @@ router.get('/', (req, res) => {
     portfolio: 'https://thetahirabbas.netlify.app',
   });
 });
-
+router.use('/expenses', auth, expenses);
 router.use('/categories', auth, categoryRoute);
 router.use('/products', auth, productRoute);
 router.use('/invoices', auth, invoiceRoute);

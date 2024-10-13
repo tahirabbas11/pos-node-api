@@ -22,6 +22,7 @@ const authRoute = require("./routes/auth.js");
 const userRoute = require("./routes/users.js");
 const vendors = require("./routes/vendors.js");
 const purchaseRoute = require("./routes/purchase.js");
+const expenseRoute = require("./routes/expenses.js");
 
 const connect = async () => {
   try {
@@ -40,7 +41,7 @@ app.use(cors({
   origin: '*', // or '*' to allow all origins
   credentials: true,
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-  // allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 
@@ -61,8 +62,9 @@ app.use("/api/vendors",auth,  vendors);
 app.use("/api/auth", authRoute);
 app.use("/api/users",auth, userRoute);
 app.use("/api/purchase",auth, purchaseRoute);
+app.use("/api/expenses",auth, expenseRoute);
 
-app.listen(port, () => {
+app.listen(port,'0.0.0.0', () => {
   connect();
   console.log(`Listening on port ${port}`);
 });
